@@ -10,6 +10,9 @@ defmodule Schedule do
     |> Enum.map(fn intersection ->
       {intersection, build_intersection_schedule(world, intersection, cache)}
     end)
+    |> Enum.filter(fn {_intersection, intersection_schedule} ->
+      length(intersection_schedule) > 0
+    end)
   end
 
   defp build_cache(%World{} = world) do
