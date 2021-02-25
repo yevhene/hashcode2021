@@ -6,7 +6,7 @@ defmodule Model.World do
     :cars_count,
     :intersections_count,
     :streets,
-    :streets_count,
+    :streets_count
   ]
 
   alias Model.Car

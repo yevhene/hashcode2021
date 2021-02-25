@@ -1,4 +1,5 @@
 defmodule Schedule do
+  alias Model.Car
   alias Model.Street
   alias Model.World
 
@@ -26,8 +27,14 @@ defmodule Schedule do
   end
 
   defp incoming_streets(%World{} = world, intersection) do
-    Enum.filter(world.streets, fn %Street{finish: finish} ->
+    world.streets
+    |> Enum.filter(fn %Street{finish: finish} ->
       finish == intersection
+    end)
+    |> Enum.filter(fn %Street{name: name} ->
+      Enum.any?(world.cars, fn %Car{route: route} ->
+        Enum.member?(route, name)
+      end)
     end)
   end
 end
