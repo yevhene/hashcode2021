@@ -49,7 +49,7 @@ defmodule Model.World do
     %{world | streets: streets}
   end
 
-  # Intersection IO
+  # Intersections IO K
   def io_k(%World{} = world) do
     0..(world.intersections_count - 1)
     |> Enum.map(fn intersection ->
@@ -60,7 +60,7 @@ defmodule Model.World do
     end)
   end
 
-  # Streets Cars
+  # Streets Cars K
   def cars_k(%World{} = world) do
     world.streets
     |> Enum.reduce(%{}, fn %Street{name: name}, acc ->
