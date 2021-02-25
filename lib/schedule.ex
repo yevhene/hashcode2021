@@ -15,7 +15,7 @@ defmodule Schedule do
   end
 
   defp build_cache(%World{} = world) do
-    %{intersections_k: intersections_k(world)}
+    %{cars_k: World.cars_k(world)}
   end
 
   def render(schedule, out \\ :stdio) do
@@ -31,32 +31,22 @@ defmodule Schedule do
     end)
   end
 
-  defp intersections_k(%World{} = world) do
-    0..(world.intersections_count - 1)
-    |> Enum.map(fn intersection ->
-      ins = length(incoming_streets(world, intersection))
-      outs = length(outcoming_streets(world, intersection))
-
-      if ins == 0 || outs == 0, do: 0.0, else: ins / outs
-    end)
-  end
-
   defp build_intersection_schedule(%World{} = world, intersection, cache) do
-    incoming_streets(world, intersection)
-    |> Enum.map(fn %Street{name: name, start: start} ->
+    streets = Street.incoming(world, intersection)
+
+    total =
+      streets
+      |> Enum.reduce(0, fn %Street{name: name}, acc ->
+        acc + cache[:cars_k][name]
+      end)
+
+    total_sec = 10
+
+    streets
+    |> Enum.map(fn %Street{name: name} ->
       {name,
-       cache[:intersections_k] |> Enum.at(start) |> Float.ceil() |> trunc()}
+       (total_sec * cache[:cars_k][name] / total) |> Float.ceil() |> trunc()}
     end)
     |> Enum.filter(fn {_name, sec} -> sec > 0 end)
-  end
-
-  defp incoming_streets(%World{} = world, intersection) do
-    world.streets
-    |> Enum.filter(fn %Street{finish: finish} -> finish == intersection end)
-  end
-
-  defp outcoming_streets(%World{} = world, intersection) do
-    world.streets
-    |> Enum.filter(fn %Street{start: start} -> start == intersection end)
   end
 end

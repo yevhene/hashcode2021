@@ -48,4 +48,28 @@ defmodule Model.World do
 
     %{world | streets: streets}
   end
+
+  # Intersection IO
+  def io_k(%World{} = world) do
+    0..(world.intersections_count - 1)
+    |> Enum.map(fn intersection ->
+      ins = length(Street.incoming(world, intersection))
+      outs = length(Street.outcoming(world, intersection))
+
+      if ins == 0 || outs == 0, do: 0.0, else: ins
+    end)
+  end
+
+  # Streets Cars
+  def cars_k(%World{} = world) do
+    world.streets
+    |> Enum.reduce(%{}, fn %Street{name: name}, acc ->
+      k =
+        world.cars
+        |> Enum.filter(fn %Car{route: route} -> Enum.member?(route, name) end)
+        |> length()
+
+      Map.put(acc, name, k)
+    end)
+  end
 end
