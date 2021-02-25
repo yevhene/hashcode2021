@@ -72,4 +72,19 @@ defmodule Model.World do
       Map.put(acc, name, k)
     end)
   end
+
+  # Streets with short routes
+  def short_k(%World{} = world, threshold) do
+    world.streets
+    |> Enum.reduce(%{}, fn %Street{name: name}, acc ->
+      k =
+        world.cars
+        |> Enum.filter(fn %Car{route: route} ->
+          length(route) <= threshold && Enum.member?(route, name)
+        end)
+        |> length()
+
+      Map.put(acc, name, k)
+    end)
+  end
 end

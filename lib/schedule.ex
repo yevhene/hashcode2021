@@ -15,7 +15,7 @@ defmodule Schedule do
   end
 
   defp build_cache(%World{} = world) do
-    %{cars_k: World.cars_k(world), io_k: World.io_k(world)}
+    %{cars_k: World.cars_k(world)}
   end
 
   def render(schedule, out \\ :stdio) do
@@ -40,18 +40,10 @@ defmodule Schedule do
         acc + cache[:cars_k][name]
       end)
 
-    total_io =
-      streets
-      |> Enum.reduce(0, fn %Street{start: start}, acc ->
-        acc + Enum.at(cache[:io_k], start)
-      end)
-
     streets
-    |> Enum.map(fn %Street{name: name, start: start} ->
-      if total_cars > 0 && total_io > 0 do
-        sec =
-          part(10, cache[:cars_k][name] / total_cars) +
-          part(10, Enum.at(cache[:io_k], start) / total_io)
+    |> Enum.map(fn %Street{name: name} ->
+      if total_cars > 0 && cache[:cars_k][name] > 0 do
+        sec = part(7, cache[:cars_k][name] / total_cars)
 
         {name, sec}
       else

@@ -1,14 +1,14 @@
 4
 0
 1
-rue-de-londres 20
+rue-de-londres 7
 1
 2
-rue-d-amsterdam 10
-rue-d-athenes 10
+rue-d-amsterdam 4
+rue-d-athenes 4
 2
 1
-rue-de-moscou 20
+rue-de-moscou 7
 3
 1
-rue-de-rome 20
+rue-de-rome 7
