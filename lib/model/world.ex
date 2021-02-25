@@ -3,10 +3,8 @@ defmodule Model.World do
     :bonus,
     :duration,
     :cars,
-    :cars_count,
     :intersections_count,
-    :streets,
-    :streets_count
+    :streets
   ]
 
   alias Model.Car
@@ -24,10 +22,8 @@ defmodule Model.World do
       bonus: bonus,
       duration: duration,
       cars: cars,
-      cars_count: cars_count,
       intersections_count: intersections_count,
-      streets: streets,
-      streets_count: streets_count
+      streets: streets
     }
   end
 
@@ -35,5 +31,21 @@ defmodule Model.World do
     IO.read(:stdio, :line)
     |> String.split([" ", "\n"], trim: true)
     |> Enum.map(&String.to_integer/1)
+  end
+
+  def remove_unused_streets(%World{} = world) do
+    used_streets =
+      world.cars
+      |> Enum.reduce(MapSet.new(), fn %Car{route: route}, set ->
+        route |> MapSet.new() |> MapSet.union(set)
+      end)
+
+    streets =
+      world.streets
+      |> Enum.filter(fn %Street{name: name} ->
+        MapSet.member?(used_streets, name)
+      end)
+
+    %{world | streets: streets}
   end
 end

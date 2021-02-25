@@ -1,5 +1,5 @@
 defmodule Model.Car do
-  defstruct [:route, :route_length]
+  defstruct [:route]
 
   alias Model.Car
 
@@ -11,9 +11,6 @@ defmodule Model.Car do
     route_length = String.to_integer(route_length)
     ^route_length = length(route)
 
-    %Car{
-      route: route,
-      route_length: route_length
-    }
+    %Car{route: route}
   end
 end
