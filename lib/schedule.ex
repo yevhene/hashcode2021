@@ -4,10 +4,16 @@ defmodule Schedule do
   alias Model.World
 
   def build(%World{} = world) do
+    cache = build_cache(world)
+
     0..(world.intersections_count - 1)
     |> Enum.map(fn intersection ->
-      {intersection, build_intersection_schedule(world, intersection)}
+      {intersection, build_intersection_schedule(world, intersection, cache)}
     end)
+  end
+
+  defp build_cache(%World{} = world) do
+    %{used_streets: used_streets(world)}
   end
 
   def render(schedule, out \\ :stdio) do
@@ -21,20 +27,25 @@ defmodule Schedule do
     end)
   end
 
-  defp build_intersection_schedule(%World{} = world, intersection) do
-    incoming_streets(world, intersection)
+  defp used_streets(%World{cars: cars}) do
+    cars
+    |> Enum.reduce(MapSet.new(), fn %Car{route: route}, set ->
+      route |> MapSet.new() |> MapSet.union(set)
+    end)
+  end
+
+  defp build_intersection_schedule(%World{} = world, intersection, cache) do
+    incoming_streets(world, intersection, cache)
     |> Enum.map(fn %Street{name: name} -> {name, 1} end)
   end
 
-  defp incoming_streets(%World{} = world, intersection) do
+  defp incoming_streets(%World{} = world, intersection, cache) do
     world.streets
     |> Enum.filter(fn %Street{finish: finish} ->
       finish == intersection
     end)
     |> Enum.filter(fn %Street{name: name} ->
-      Enum.any?(world.cars, fn %Car{route: route} ->
-        Enum.member?(route, name)
-      end)
+      MapSet.member?(cache[:used_streets], name)
     end)
   end
 end
