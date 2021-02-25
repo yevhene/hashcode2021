@@ -22,6 +22,8 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 hashcode2021-*.tar
 
-
 # Temporary files for e.g. tests
 /tmp
+
+# Out code
+/out/code.zip

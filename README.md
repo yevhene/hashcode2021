@@ -7,5 +7,5 @@ mix deps.get
 
 ## Run
 ```
-mix process < in/a.txt > out/a.txt
+./run.sh
 ```
