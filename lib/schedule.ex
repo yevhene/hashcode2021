@@ -6,7 +6,7 @@ defmodule Schedule do
     cache = build_cache(world)
 
     0..(world.intersections_count - 1)
-    |> Enum.map(fn intersection ->
+    |> Parallel.chunk_pmap(50, fn intersection ->
       {intersection, build_intersection_schedule(world, intersection, cache)}
     end)
     |> Enum.filter(fn {_intersection, intersection_schedule} ->

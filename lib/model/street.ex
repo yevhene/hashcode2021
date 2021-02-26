@@ -21,9 +21,4 @@ defmodule Model.Street do
     world.streets
     |> Enum.filter(fn %Street{finish: finish} -> finish == intersection end)
   end
-
-  def outcoming(%World{} = world, intersection) do
-    world.streets
-    |> Enum.filter(fn %Street{start: start} -> start == intersection end)
-  end
 end
